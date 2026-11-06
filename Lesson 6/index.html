@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài tập 6 - Flexbox Responsive</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 selection:bg-rose-500 selection:text-white">
+    <div class="w-full max-w-4xl mx-auto space-y-8">
+        
+        <!-- Header -->
+        <header class="text-center space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                Tailwind CSS • Responsive Layout
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                Bài Tập 6: Flexbox Responsive
+            </h1>
+            <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+                Tự động chuyển từ <strong class="text-rose-400 font-semibold">dọc (Mobile)</strong> sang <strong class="text-rose-400 font-semibold">ngang (Desktop)</strong> với khoảng cách phân bố đều (<code class="bg-slate-800 px-1.5 py-0.5 rounded text-rose-300 text-xs">justify-between</code>).
+            </p>
+        </header>
+
+        <!-- Preview Card -->
+        <main class="bg-slate-900/90 backdrop-blur border border-slate-800 rounded-3xl p-6 sm:p-12 shadow-2xl relative overflow-hidden">
+            <!-- Background Glows -->
+            <div class="absolute -top-20 -left-20 w-56 h-56 bg-rose-600/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-20 -right-20 w-56 h-56 bg-orange-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Current Breakpoint Indicator Badge -->
+            <div class="flex items-center justify-between pb-6 mb-6 border-b border-slate-800/80 text-xs text-slate-400">
+                <span class="font-medium flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Chế độ hiển thị hiện tại:
+                </span>
+                <span class="inline-flex sm:hidden px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono font-semibold">
+                    📱 Mobile (&lt; 640px) • Cột dọc
+                </span>
+                <span class="hidden sm:inline-flex md:hidden px-2.5 py-1 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono font-semibold">
+                    📟 Tablet (&ge; 640px) • Hàng ngang
+                </span>
+                <span class="hidden md:inline-flex px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono font-semibold">
+                    💻 Desktop (&ge; 768px) • Hàng ngang
+                </span>
+            </div>
+
+            <!-- 
+                ==========================================================
+                PHẦN BÀI TẬP CHÍNH (ĐÃ SỬA LỖI CÚ PHÁP VÀ THÊM RESPONSIVE)
+                ==========================================================
+                - flex: Bật Flexbox
+                - flex-col: Mặc định xếp dọc trên màn hình nhỏ (Mobile)
+                - sm:flex-row: Tự động đổi thành hàng ngang từ màn hình >= 640px
+                - justify-between: Căn đều khoảng cách 2 bên và ở giữa
+                - items-center: Căn giữa theo trục chéo
+                - gap-6: Khoảng cách giữa các box khi co giãn
+            -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-6 w-full">
+                <!-- Box 1 -->
+                <div class="w-full sm:w-28 md:w-36 h-28 md:h-36 bg-gradient-to-br from-rose-500 to-red-600 rounded-2xl shadow-lg shadow-rose-500/20 flex flex-col items-center justify-center font-bold text-white text-lg tracking-wide hover:-translate-y-1 hover:shadow-rose-500/40 transition-all duration-300 border border-rose-400/20 cursor-pointer group">
+                    <span class="group-hover:scale-110 transition-transform duration-200">Box 1</span>
+                    <span class="text-xs font-normal text-rose-200/80 mt-1">Item 1</span>
+                </div>
+
+                <!-- Box 2 -->
+                <div class="w-full sm:w-28 md:w-36 h-28 md:h-36 bg-gradient-to-br from-red-500 to-rose-700 rounded-2xl shadow-lg shadow-red-500/20 flex flex-col items-center justify-center font-bold text-white text-lg tracking-wide hover:-translate-y-1 hover:shadow-red-500/40 transition-all duration-300 border border-red-400/20 cursor-pointer group">
+                    <span class="group-hover:scale-110 transition-transform duration-200">Box 2</span>
+                    <span class="text-xs font-normal text-rose-200/80 mt-1">Item 2</span>
+                </div>
+
+                <!-- Box 3 -->
+                <div class="w-full sm:w-28 md:w-36 h-28 md:h-36 bg-gradient-to-br from-rose-600 to-red-800 rounded-2xl shadow-lg shadow-rose-600/20 flex flex-col items-center justify-center font-bold text-white text-lg tracking-wide hover:-translate-y-1 hover:shadow-rose-600/40 transition-all duration-300 border border-rose-400/20 cursor-pointer group">
+                    <span class="group-hover:scale-110 transition-transform duration-200">Box 3</span>
+                    <span class="text-xs font-normal text-rose-200/80 mt-1">Item 3</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Hướng dẫn chi tiết & Giải thích bài học -->
+        <footer class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-400">
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-2">
+                <div class="flex items-center gap-2 text-rose-400 font-semibold">
+                    <span>💡</span>
+                    <span>Lỗi cú pháp đã sửa từ bài gốc:</span>
+                </div>
+                <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-300">
+                    <li>Sửa <code class="text-rose-400 font-mono">&lt;div&gt;classs="..."&gt;</code> thành <code class="text-emerald-400 font-mono">&lt;div class="..."&gt;</code> (thừa dấu <code class="font-mono">&gt;</code> và sai chính tả <code class="font-mono">classs</code>).</li>
+                    <li>Sửa <code class="text-rose-400 font-mono">justify between</code> thành <code class="text-emerald-400 font-mono">justify-between</code> (thiếu dấu gạch nối).</li>
+                    <li>Sửa tên các hộp thành <strong class="text-slate-200">Box 1, Box 2, Box 3</strong>.</li>
+                </ul>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-2">
+                <div class="flex items-center gap-2 text-emerald-400 font-semibold">
+                    <span>⚡</span>
+                    <span>Cách hoạt động của Responsive:</span>
+                </div>
+                <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-300">
+                    <li><code class="text-emerald-400 font-mono">flex-col</code>: Màn hình nhỏ (Mobile &lt; 640px) tự xếp dọc 3 hộp.</li>
+                    <li><code class="text-emerald-400 font-mono">sm:flex-row</code>: Màn hình lớn (&ge; 640px) tự chuyển thành hàng ngang.</li>
+                    <li><code class="text-emerald-400 font-mono">justify-between</code>: Tự căn đều 3 hộp giãn ra 2 bên lề.</li>
+                </ul>
+            </div>
+        </footer>
+
+    </div>
+</body>
+</html>

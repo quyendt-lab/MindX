@@ -1,0 +1,40 @@
+/* ========================================================
+   Bài tập 6: Responsive Flexbox bằng CSS thuần (Media Query)
+   Dành cho bạn tham khảo thêm nếu không dùng Tailwind CSS!
+   ======================================================== */
+
+/* Mặc định cho màn hình nhỏ (Mobile - Mobile first) */
+.container {
+    display: flex;
+    flex-direction: column; /* Xếp theo cột dọc */
+    align-items: center;    /* Căn giữa */
+    gap: 1.5rem;            /* Khoảng cách giữa các box */
+    width: 100%;
+}
+
+.box {
+    width: 100%;
+    max-width: 18rem;
+    height: 7rem;
+    background-color: #ef4444; /* Màu đỏ */
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+/* Khi màn hình đạt kích thước từ 640px trở lên (Tablet / Desktop) */
+@media (min-width: 640px) {
+    .container {
+        flex-direction: row;        /* Chuyển thành hàng ngang */
+        justify-content: space-between; /* Căn đều khoảng cách 2 bên */
+    }
+
+    .box {
+        width: 8rem;
+        height: 8rem;
+    }
+}

@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travlog - Travel Top Destination of the World | Bài Tập 6 Responsive</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            purple: '#5D50C6',
+                            purpleDark: '#4D40B6',
+                            purpleLight: '#F3F0FF',
+                            pink: '#F85E9F',
+                            pinkLight: '#FFF0F5',
+                            orange: '#FF5722',
+                            orangeLight: '#FFF4EE',
+                            yellow: '#FACD49',
+                            dark: '#191825',
+                            muted: '#737380'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'brand-purple': '0 20px 35px -10px rgba(93, 80, 198, 0.35)',
+                        'brand-card': '0 25px 50px -12px rgba(25, 24, 37, 0.12)',
+                        'brand-badge': '0 10px 25px -5px rgba(25, 24, 37, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Subtle floating animations for badges */
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-7px); }
+        }
+        @keyframes float-delayed {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(7px); }
+        }
+        .animate-float {
+            animation: float-slow 3.8s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+            animation: float-delayed 4.6s ease-in-out infinite;
+        }
+
+        /* Figma Grid Column Overlay */
+        .figma-grid-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 40;
+            display: none;
+        }
+        .show-grid .figma-grid-overlay {
+            display: block !important;
+        }
+
+        /* ========================================================
+           HELPER OVERRIDES FOR FORCED PREVIEW MODES
+           Cho phép xem thử Desktop/Tablet/Mobile ngay trên màn hình lớn
+           khi bấm các nút trên Toolbar mà không cần mở DevTools
+           ======================================================== */
+        
+        /* 1. Khi ép chế độ Mobile (force-mobile) */
+        .force-mobile .nav-desktop { display: none !important; }
+        .force-mobile .nav-tablet-burger { display: none !important; }
+        .force-mobile .nav-mobile-burger { display: flex !important; }
+        .force-mobile .nav-auth { display: none !important; }
+        .force-mobile .hero-row { flex-direction: column !important; }
+        .force-mobile .hero-text-col { order: 2 !important; align-items: center !important; text-align: center !important; }
+        .force-mobile .hero-graphic-col { order: 1 !important; }
+        .force-mobile .hero-cta-group { flex-direction: column !important; }
+        .force-mobile .hero-cta-group button { width: 100% !important; }
+        .force-mobile .hero-title { font-size: 2rem !important; line-height: 1.25 !important; }
+        .force-mobile .partners-row { justify-content: center !important; gap: 1.5rem !important; }
+
+        /* 2. Khi ép chế độ Tablet (force-tablet) */
+        .force-tablet .nav-desktop { display: none !important; }
+        .force-tablet .nav-tablet-burger { display: flex !important; }
+        .force-tablet .nav-mobile-burger { display: none !important; }
+        .force-tablet .nav-auth { display: flex !important; }
+        .force-tablet .hero-row { flex-direction: column !important; }
+        .force-tablet .hero-text-col { order: 2 !important; align-items: center !important; text-align: center !important; }
+        .force-tablet .hero-graphic-col { order: 1 !important; }
+        .force-tablet .hero-cta-group { flex-direction: row !important; }
+        .force-tablet .hero-cta-group button { width: auto !important; }
+        .force-tablet .hero-title { font-size: 2.75rem !important; line-height: 1.2 !important; }
+        .force-tablet .partners-row { justify-content: space-around !important; }
+
+        /* 3. Khi ép chế độ Desktop (force-desktop) */
+        .force-desktop .nav-desktop { display: flex !important; }
+        .force-desktop .nav-tablet-burger { display: none !important; }
+        .force-desktop .nav-mobile-burger { display: none !important; }
+        .force-desktop .nav-auth { display: flex !important; }
+        .force-desktop .hero-row { flex-direction: row !important; }
+        .force-desktop .hero-text-col { order: 1 !important; align-items: flex-start !important; text-align: left !important; }
+        .force-desktop .hero-graphic-col { order: 2 !important; }
+        .force-desktop .hero-cta-group { flex-direction: row !important; }
+        .force-desktop .hero-cta-group button { width: auto !important; }
+        .force-desktop .hero-title { font-size: 3.5rem !important; line-height: 1.15 !important; }
+        .force-desktop .partners-row { justify-content: space-between !important; }
+    </style>
+</head>
+<body class="bg-[#F1F3F7] text-brand-dark antialiased min-h-screen selection:bg-brand-pink selection:text-white">
+
+    <!-- =========================================================================
+         TOP TOOLBAR TIỆN ÍCH:
+         Giúp thầy cô & học viên dễ dàng kiểm tra 3 màn hình và đối chiếu với ảnh mẫu
+         Có thể bấm nút [Ẩn Toolbar] để xem nguyên bản trang web 100%
+         ========================================================================= -->
+    <aside id="top-toolbar" class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md text-white border-b border-slate-800 text-xs py-2 px-4 shadow-xl transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            
+            <!-- Left Info -->
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-gradient-to-tr from-brand-purple to-brand-pink text-white font-black text-xs shadow-md">
+                    6
+                </span>
+                <div>
+                    <span class="font-bold text-white tracking-wide">Bài Tập 6: Travlog Landing Page</span>
+                    <span class="hidden sm:inline text-slate-400 text-[11px] ml-1.5">• Responsive Desktop, Tablet, Mobile (Tailwind CSS)</span>
+                </div>
+            </div>
+
+            <!-- View Mode Switcher Buttons -->
+            <div class="flex items-center bg-slate-800/90 p-1 rounded-xl border border-slate-700/80">
+                <button type="button" onclick="setViewMode('auto')" id="btn-mode-auto" class="px-3 py-1.5 rounded-lg font-medium transition text-white bg-brand-purple shadow-sm flex items-center gap-1.5" title="Co giãn tự nhiên theo độ rộng trình duyệt">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                    <span>Tự động (Fluid)</span>
+                </button>
+                <button type="button" onclick="setViewMode('desktop')" id="btn-mode-desktop" class="px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-white flex items-center gap-1.5" title="Xem khung Desktop 1200px">
+                    <span>💻 Desktop</span>
+                </button>
+                <button type="button" onclick="setViewMode('tablet')" id="btn-mode-tablet" class="px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-white flex items-center gap-1.5" title="Xem khung Tablet 768px">
+                    <span>📟 Tablet</span>
+                </button>
+                <button type="button" onclick="setViewMode('mobile')" id="btn-mode-mobile" class="px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-white flex items-center gap-1.5" title="Xem khung Mobile 375px">
+                    <span>📱 Mobile</span>
+                </button>
+                <button type="button" onclick="setViewMode('comparison')" id="btn-mode-comparison" class="px-3 py-1.5 rounded-lg font-bold transition text-amber-300 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 flex items-center gap-1.5" title="Xem cùng lúc 3 màn hình đặt cạnh nhau như ảnh mẫu đề bài">
+                    <span>🖼️ So sánh 3 màn hình (ảnh đề bài)</span>
+                </button>
+            </div>
+
+            <!-- Right Options: Toggle Figma Grid & Hide Toolbar -->
+            <div class="flex items-center gap-2">
+                <!-- Toggle Grid -->
+                <button type="button" onclick="toggleFigmaGrid()" id="btn-grid-toggle" class="px-3 py-1.5 rounded-lg border border-rose-500/30 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 transition flex items-center gap-1.5 font-medium" title="Bật các cột lưới màu hồng Figma như trong hình chụp">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                    <span>Lưới Figma: <strong id="grid-status-text">Tắt</strong></span>
+                </button>
+
+                <!-- Hide Toolbar Button -->
+                <button type="button" onclick="toggleToolbarCollapse()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="Ẩn thanh công cụ này">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- Floating Button to Show Toolbar if hidden -->
+    <button type="button" id="btn-show-toolbar" onclick="toggleToolbarCollapse()" class="fixed bottom-4 right-4 z-50 hidden px-3 py-2 rounded-xl bg-slate-900/90 text-white text-xs font-semibold shadow-2xl border border-slate-700 hover:bg-slate-800 transition items-center gap-2">
+        <span>⚙️ Hiện thanh công cụ</span>
+    </button>
+
+
+    <!-- =========================================================================
+         CHẾ ĐỘ XEM CHÍNH: SINGLE VIEW (TỰ ĐỘNG HOẶC THEO TỪNG THIẾT BỊ)
+         ========================================================================= -->
+    <div id="single-view-container" class="w-full flex justify-center py-0 sm:py-6 px-0 sm:px-4">
+        
+        <!-- KHUNG TRANG WEB (WEBSITE FRAME) -->
+        <main id="website-frame" class="w-full max-w-[1440px] bg-white relative transition-all duration-300 overflow-hidden sm:rounded-[36px] sm:shadow-2xl sm:border sm:border-slate-200/80">
+            
+            <!-- -------------------------------------------------------------
+                 FIGMA GRID OVERLAY (LƯỚI CỘT MÀU HỒNG FIGMA)
+                 - 12 cột trên Desktop
+                 - 8 cột trên Tablet
+                 - 4 cột trên Mobile
+                 ------------------------------------------------------------- -->
+            <div class="figma-grid-overlay">
+                <div class="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 h-full">
+                    <div class="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-4 md:gap-6 h-full opacity-45">
+                        <div class="bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="hidden md:block bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="hidden md:block bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="hidden md:block bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="hidden md:block bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="hidden lg:block bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="hidden lg:block bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="hidden lg:block bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                        <div class="hidden lg:block bg-rose-500/20 border-x border-rose-500/30 h-full"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Soft background ambient glow -->
+            <div class="absolute top-0 right-0 -mr-24 -mt-24 w-96 h-96 bg-brand-pink/5 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-20 left-0 -ml-24 w-96 h-96 bg-brand-orange/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- =========================================================================
+                 1. NAVIGATION BAR RESPONSIVE
+                 - Desktop (>= lg): [Logo Travlog] ------ [Nav Links] ------ [Login | SignUp]
+                 - Tablet (md -> lg): [Hamburger] ------- [Logo Travlog] ---- [Login | SignUp]
+                 - Mobile (< md):    [Logo Travlog] ------------------------ [Hamburger]
+                 ========================================================================= -->
+            <header class="relative z-30 max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-6 pb-4">
+                <nav class="flex items-center justify-between">
+                    
+                    <!-- [TABLET ONLY: Hamburger Menu on Far-Left] -->
+                    <div class="nav-tablet-burger hidden md:flex lg:hidden items-center">
+                        <button type="button" onclick="toggleMobileNav('mobile-nav-menu')" class="p-2.5 rounded-xl bg-brand-purple text-white hover:bg-brand-purpleDark shadow-md transition-all active:scale-95" aria-label="Toggle menu">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- [LOGO TRAVLOG] -->
+                    <!-- Desktop: Left | Tablet: Center | Mobile: Left -->
+                    <div class="flex items-center gap-2.5 cursor-pointer group">
+                        <!-- Custom Travlog Gradient Globe Icon -->
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-brand-purple via-brand-purple to-brand-pink flex items-center justify-center p-2 shadow-md group-hover:scale-105 transition-transform duration-300">
+                            <!-- SVG lines depicting globe/waves -->
+                            <svg class="w-full h-full text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                <path d="M4 9h16"/>
+                                <path d="M2.5 15h19"/>
+                                <path d="M7 4h10"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl sm:text-2xl font-black tracking-tight text-brand-dark group-hover:text-brand-purple transition-colors">
+                            Travlog
+                        </span>
+                    </div>
+
+                    <!-- [DESKTOP ONLY: Nav Links in Center] -->
+                    <div class="nav-desktop hidden lg:flex items-center gap-8 xl:gap-12">
+                        <a href="#home" class="text-sm font-bold text-brand-dark hover:text-brand-purple transition-colors">Home</a>
+                        <a href="#discover" class="text-sm font-medium text-brand-muted hover:text-brand-dark transition-colors">Discover</a>
+                        <a href="#deals" class="text-sm font-medium text-brand-muted hover:text-brand-dark transition-colors">Special Deals</a>
+                        <a href="#contact" class="text-sm font-medium text-brand-muted hover:text-brand-dark transition-colors">Contact</a>
+                    </div>
+
+                    <!-- [DESKTOP & TABLET: Auth Buttons on Right] -->
+                    <div class="nav-auth hidden md:flex items-center gap-5 lg:gap-7">
+                        <a href="#login" class="text-sm font-bold text-brand-dark hover:text-brand-purple transition-colors px-2 py-1">
+                            Log In
+                        </a>
+                        <a href="#signup" class="text-sm font-bold text-white bg-brand-purple hover:bg-brand-purpleDark px-7 py-3 rounded-full shadow-brand-purple hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0">
+                            Sign Up
+                        </a>
+                    </div>
+
+                    <!-- [MOBILE ONLY: Hamburger Menu on Far-Right] -->
+                    <div class="nav-mobile-burger flex md:hidden items-center">
+                        <button type="button" onclick="toggleMobileNav('mobile-nav-menu')" class="p-2 rounded-xl bg-brand-purple text-white hover:bg-brand-purpleDark shadow-md transition-all active:scale-95" aria-label="Toggle menu">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </nav>
+
+                <!-- Mobile Dropdown Navigation Drawer -->
+                <div id="mobile-nav-menu" class="hidden lg:hidden mt-4 pt-4 pb-6 px-4 bg-white/95 backdrop-blur-lg border border-slate-100 rounded-2xl shadow-xl space-y-4 transition-all">
+                    <div class="flex flex-col space-y-3 font-semibold text-sm">
+                        <a href="#home" class="text-brand-purple py-2 px-3 rounded-lg bg-brand-purpleLight">Home</a>
+                        <a href="#discover" class="text-brand-dark hover:text-brand-purple py-2 px-3 rounded-lg hover:bg-slate-50">Discover</a>
+                        <a href="#deals" class="text-brand-dark hover:text-brand-purple py-2 px-3 rounded-lg hover:bg-slate-50">Special Deals</a>
+                        <a href="#contact" class="text-brand-dark hover:text-brand-purple py-2 px-3 rounded-lg hover:bg-slate-50">Contact</a>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
+                        <a href="#login" class="w-full text-center py-2.5 rounded-full border border-slate-200 text-brand-dark font-bold text-sm hover:border-brand-purple">Log In</a>
+                        <a href="#signup" class="w-full text-center py-2.5 rounded-full bg-brand-purple text-white font-bold text-sm shadow-md">Sign Up</a>
+                    </div>
+                </div>
+            </header>
+
+
+            <!-- =========================================================================
+                 2. HERO SECTION RESPONSIVE
+                 - Desktop (>= lg): 2 Cột ngang (Trái: Nội dung, Phải: Ảnh Collage)
+                 - Tablet (md -> lg): 1 Cột dọc (TRÊN: Ảnh Collage, DƯỚI: Nội dung căn giữa)
+                 - Mobile (< md):    1 Cột dọc (TRÊN: Ảnh Collage thu nhỏ, DƯỚI: Nội dung căn giữa)
+                 ========================================================================= -->
+            <section class="relative max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-4 pb-12 lg:py-12">
+                <div class="hero-row flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-12 xl:gap-16">
+                    
+                    <!-- -------------------------------------------------------------
+                         A. TEXT CONTENT SECTION:
+                         - Desktop: order-1 (Bên trái), căn trái (text-left)
+                         - Tablet & Mobile: order-2 (Bên dưới ảnh), căn giữa (text-center)
+                         ------------------------------------------------------------- -->
+                    <div class="hero-text-col w-full lg:w-5/12 flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-1 space-y-6 lg:space-y-8">
+                        
+                        <!-- Explore Pill Badge -->
+                        <div class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-brand-pinkLight border border-brand-pink/15 text-brand-pink font-bold text-xs sm:text-sm tracking-wide shadow-sm hover:scale-105 transition-transform cursor-pointer">
+                            <span>Explore the world!</span>
+                            <!-- Suitcase icon -->
+                            <svg class="w-4 h-4 text-brand-pink" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
+                            </svg>
+                        </div>
+
+                        <!-- Main Title -->
+                        <h1 class="hero-title text-3xl sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[62px] font-black tracking-tight text-brand-dark leading-[1.2] lg:leading-[1.15]">
+                            Travel <span class="text-brand-pink">top destination</span> of the world
+                        </h1>
+
+                        <!-- Subtitle Description -->
+                        <p class="text-brand-muted text-sm sm:text-base lg:text-lg max-w-md md:max-w-lg lg:max-w-none leading-relaxed font-normal">
+                            We always make our customer happy by providing as many choices as possible
+                        </p>
+
+                        <!-- CTA Action Buttons -->
+                        <!-- Mobile: Stacked full-width | Tablet & Desktop: Horizontal row -->
+                        <div class="hero-cta-group w-full pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-5">
+                            
+                            <!-- Get Started Button -->
+                            <button type="button" class="w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-full bg-brand-purple hover:bg-brand-purpleDark text-white font-bold text-sm sm:text-base shadow-brand-purple hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 text-center">
+                                Get Started
+                            </button>
+
+                            <!-- Watch Demo Button -->
+                            <button type="button" class="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 text-brand-dark font-bold text-sm sm:text-base shadow-brand-badge hover:shadow-md transition-all duration-300 flex items-center justify-center gap-3 group">
+                                <span class="w-7 h-7 rounded-full bg-brand-purple/10 flex items-center justify-center text-brand-purple group-hover:bg-brand-purple group-hover:text-white transition-colors duration-300">
+                                    <svg class="w-3.5 h-3.5 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </span>
+                                <span>Watch Demo</span>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- -------------------------------------------------------------
+                         B. HERO IMAGE GRAPHICS COLLAGE:
+                         - Desktop: order-2 (Bên phải), kích thước lớn (~600px)
+                         - Tablet: order-1 (Nằm TRÊN), kích thước vừa (~520px)
+                         - Mobile: order-1 (Nằm TRÊN), tỷ lệ co nhỏ (~340px)
+                         ------------------------------------------------------------- -->
+                    <div class="hero-graphic-col w-full lg:w-7/12 flex items-center justify-center order-1 lg:order-2 relative py-4 sm:py-8">
+                        
+                        <!-- World Map Background Graphic (SVG) -->
+                        <div class="absolute inset-0 flex items-center justify-center opacity-40 pointer-events-none scale-90 sm:scale-100">
+                            <svg class="w-full max-w-xl text-rose-200 fill-current" viewBox="0 0 1000 500">
+                                <path d="M150,120 Q180,90 220,110 T280,140 T320,110 T380,160 T350,230 T270,250 T200,220 Z"/>
+                                <path d="M520,80 Q580,70 650,90 T720,150 T690,220 T610,230 T540,160 Z"/>
+                                <path d="M720,180 Q800,160 880,190 T920,280 T850,330 T780,260 Z"/>
+                                <path d="M260,290 Q320,290 350,360 T320,440 T250,420 T240,340 Z"/>
+                                <path d="M720,340 Q780,330 840,360 T830,420 T750,410 Z"/>
+                            </svg>
+                        </div>
+
+                        <!-- Dashed Flight Paths (SVG Curves + Airplanes) -->
+                        <svg class="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 600 480" fill="none">
+                            <!-- Arc 1: From left over Top Card to Right Card -->
+                            <path d="M 60,180 C 120,40 340,30 460,150" stroke="#FF5722" stroke-width="2.5" stroke-dasharray="6 6" stroke-linecap="round" opacity="0.85"/>
+                            <!-- Arc 2: Loop around right card -->
+                            <path d="M 460,150 C 560,220 540,380 440,390" stroke="#FF5722" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round" opacity="0.6"/>
+                            
+                            <!-- Little Airplane 1 on Arc 1 -->
+                            <g transform="translate(230, 48) rotate(15)">
+                                <path d="M0,0 L14,6 L6,14 L5,9 L0,8 Z" fill="#FF5722"/>
+                            </g>
+                            <!-- Little Airplane 2 on Arc 2 -->
+                            <g transform="translate(490, 310) rotate(135)">
+                                <path d="M0,0 L14,6 L6,14 L5,9 L0,8 Z" fill="#FF5722"/>
+                            </g>
+                            <!-- Location Pin on top arc -->
+                            <circle cx="460" cy="150" r="4" fill="#FF5722"/>
+                            <circle cx="515" cy="175" r="3" fill="#FF5722" opacity="0.5"/>
+                        </svg>
+
+
+                        <!-- The 3-Image Composition Layout -->
+                        <div class="relative z-20 flex items-center justify-center gap-3 sm:gap-6 w-full max-w-[340px] sm:max-w-[480px] md:max-w-[540px]">
+                            
+                            <!-- LEFT IMAGE COLUMN: 2 Cards (Top: Santorini, Bottom: Mountain) -->
+                            <div class="flex flex-col gap-3 sm:gap-6 w-1/2">
+                                
+                                <!-- CARD 1: Santorini Greece (Top Left) -->
+                                <div class="relative group overflow-hidden rounded-2xl sm:rounded-[32px] shadow-brand-card aspect-[4/5] bg-slate-100">
+                                    <img src="images/santorini.jpg" 
+                                         alt="Santorini Greece destination" 
+                                         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                                         loading="lazy">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                                </div>
+
+                                <!-- CARD 2: Mountain Backpacker (Bottom Left) -->
+                                <div class="relative group overflow-hidden rounded-2xl sm:rounded-[32px] shadow-brand-card aspect-square bg-slate-100">
+                                    <img src="images/mountain.jpg" 
+                                         alt="Mountain traveler" 
+                                         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                                         loading="lazy">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                                </div>
+
+                            </div>
+
+
+                            <!-- RIGHT IMAGE COLUMN: 1 Tall Card (Girl traveler with camera) -->
+                            <div class="w-1/2 pt-6 sm:pt-12">
+                                
+                                <!-- CARD 3: Traveler Girl (Right) -->
+                                <div class="relative group overflow-hidden rounded-2xl sm:rounded-[32px] shadow-brand-card aspect-[3/4.4] bg-slate-100">
+                                    <img src="images/traveler.jpg" 
+                                         alt="Traveler exploring destination" 
+                                         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                                         loading="lazy">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                                </div>
+
+                            </div>
+
+
+                            <!-- =========================================================
+                                 FLOATING BADGES & ICONS (Phụ kiện nổi giống hệt bản vẽ)
+                                 ========================================================= -->
+
+                            <!-- Floating Badge 1: Pink Circle with Paper Plane (Send) -->
+                            <!-- Located on left edge of Card 1 -->
+                            <div class="absolute -left-2 sm:-left-4 top-[32%] sm:top-[30%] -translate-y-1/2 z-30 animate-float">
+                                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-brand-pink text-white flex items-center justify-center shadow-lg shadow-brand-pink/40 hover:scale-110 transition-transform cursor-pointer">
+                                    <!-- Paper Airplane SVG -->
+                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 -translate-y-0.5 translate-x-0.5 rotate-12" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Floating Badge 2: "Top Places" Pill -->
+                            <!-- Located on the right edge of Card 3 -->
+                            <div class="absolute -right-2 sm:-right-4 top-[62%] sm:top-[60%] -translate-y-1/2 z-30 animate-float-delayed">
+                                <div class="bg-white/95 backdrop-blur-md py-1.5 sm:py-2.5 px-3 sm:px-4 rounded-full shadow-brand-badge border border-slate-100 flex items-center gap-1.5 sm:gap-2 hover:scale-105 transition-transform cursor-pointer">
+                                    <!-- Location pin yellow/orange -->
+                                    <svg class="w-4 h-4 text-brand-yellow" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                    </svg>
+                                    <span class="text-[11px] sm:text-xs font-bold text-brand-dark tracking-wide">Top Places</span>
+                                </div>
+                            </div>
+
+                            <!-- Floating Badge 3: Orange Circle with Avatar Icon -->
+                            <!-- Located at bottom center between Card 2 and Card 3 -->
+                            <div class="absolute left-[45%] sm:left-[46%] bottom-1 sm:bottom-4 -translate-x-1/2 z-30 animate-float">
+                                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-brand-orange text-white flex items-center justify-center shadow-lg shadow-brand-orange/40 hover:scale-110 transition-transform cursor-pointer">
+                                    <!-- User Avatar SVG -->
+                                    <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+
+            <!-- =========================================================================
+                 3. PARTNER / SPONSORS BAR RESPONSIVE
+                 - Desktop (>= lg): 5 Logos trải đều trên 1 hàng ngang (justify-between)
+                 - Tablet (md -> lg): 5 Logos trên 1 hàng hoặc dàn đều có khoảng cách
+                 - Mobile (< md):    5 Logos cuộn/chia làm 2 hàng cân đối
+                 ========================================================================= -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-4 pb-12 sm:pb-16">
+                <div class="partners-row pt-6 border-t border-slate-100/80 flex flex-wrap items-center justify-center md:justify-between gap-6 sm:gap-8 lg:gap-12 opacity-80 hover:opacity-100 transition-opacity">
+                    
+                    <!-- 1. TripAdvisor -->
+                    <div class="flex items-center gap-2 text-slate-800 hover:text-brand-purple transition-colors cursor-pointer group">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-4.5 13c-1.38 0-2.5-1.12-2.5-2.5S6.12 10 7.5 10s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zm9 0c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM7.5 11c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm9 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
+                        </svg>
+                        <span class="font-extrabold text-base sm:text-lg tracking-tight">tripadvisor</span>
+                    </div>
+
+                    <!-- 2. Expedia -->
+                    <div class="flex items-center gap-1.5 text-slate-800 hover:text-brand-purple transition-colors cursor-pointer">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="12" r="10" fill="#FACD49"/>
+                            <path d="M7 13l4-3 5 1-2 2 3 1-5 2z" fill="#191825"/>
+                        </svg>
+                        <span class="font-extrabold text-base sm:text-lg tracking-tight">Expedia</span>
+                    </div>
+
+                    <!-- 3. Booking.com -->
+                    <div class="flex items-center text-slate-800 hover:text-brand-purple transition-colors cursor-pointer">
+                        <span class="font-black text-base sm:text-xl tracking-tight">Booking<span class="text-sky-600">.com</span></span>
+                    </div>
+
+                    <!-- 4. Airbnb -->
+                    <div class="flex items-center gap-1.5 text-slate-800 hover:text-brand-purple transition-colors cursor-pointer">
+                        <svg class="w-6 h-6 text-brand-pink" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C8.5 2 6 5.5 6 9.5c0 4.2 3.8 8.8 6 12.5 2.2-3.7 6-8.3 6-12.5C18 5.5 15.5 2 12 2zm0 11.5c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/>
+                        </svg>
+                        <span class="font-extrabold text-base sm:text-lg tracking-tight">airbnb</span>
+                    </div>
+
+                    <!-- 5. Orbitz -->
+                    <div class="flex items-center text-slate-800 hover:text-brand-purple transition-colors cursor-pointer">
+                        <span class="font-black text-base sm:text-lg tracking-widest uppercase">ORBITZ</span>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+
+    <!-- =========================================================================
+         CHẾ ĐỘ XEM ĐẶC BIỆT: SO SÁNH 3 MÀN HÌNH CẠNH NHAU
+         (DESKTOP - TABLET - MOBILE GIỐNG HỆT ẢNH BẢN VẼ ĐỀ BÀI)
+         ========================================================================= -->
+    <div id="comparison-view-container" class="hidden w-full max-w-[1700px] mx-auto px-4 py-8">
+        
+        <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <span class="px-3 py-1 rounded-full bg-brand-purple/10 text-brand-purple text-xs font-bold border border-brand-purple/20">
+                    Bản đối chiếu trực quan Figma
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-800 mt-2">So Sánh 3 Màn Hình Cạnh Nhau</h2>
+                <p class="text-slate-500 text-xs sm:text-sm mt-1">Mô phỏng 100% hình ảnh trong đề bài với bố cục lưới 12 cột (Desktop), 8 cột (Tablet) và 4 cột (Mobile).</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="setViewMode('auto')" class="text-xs font-bold px-4 py-2.5 bg-brand-purple text-white rounded-xl hover:bg-brand-purpleDark shadow-md transition">
+                    ← Trở lại xem bình thường
+                </button>
+            </div>
+        </div>
+
+        <!-- 3 CỘT TRỰC QUAN ĐẶT CẠNH NHAU -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- 1. CỘT DESKTOP (lg:col-span-6 hoặc 5) -->
+            <div class="lg:col-span-5 flex flex-col">
+                <div class="flex items-center justify-between pb-3 mb-2 border-b border-slate-300">
+                    <span class="text-xl font-black text-slate-800">Desktop</span>
+                    <span class="text-xs font-mono text-slate-500 bg-slate-200/80 px-2 py-0.5 rounded">12 Cột • Width &ge; 1024px</span>
+                </div>
+                <!-- Frame Container Desktop -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-300 overflow-hidden force-desktop show-grid relative p-4 text-[13px]">
+                    <!-- Mini Header -->
+                    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-brand-purple to-brand-pink flex items-center justify-center p-1.5 text-white">
+                                <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 9h16"/><path d="M2.5 15h19"/></svg>
+                            </div>
+                            <span class="font-extrabold text-sm text-brand-dark">Travlog</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[11px] font-semibold text-slate-600">
+                            <span class="text-brand-dark font-bold">Home</span>
+                            <span>Discover</span>
+                            <span>Special Deals</span>
+                            <span>Contact</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-[11px]">
+                            <span class="font-bold">Log In</span>
+                            <span class="bg-brand-purple text-white px-3 py-1 rounded-full font-bold">Sign Up</span>
+                        </div>
+                    </div>
+                    <!-- Mini Hero -->
+                    <div class="grid grid-cols-2 gap-4 items-center">
+                        <div class="space-y-3">
+                            <span class="inline-block px-2.5 py-1 rounded-full bg-brand-pinkLight text-brand-pink font-bold text-[10px]">Explore the world! 💼</span>
+                            <h3 class="text-xl font-black leading-tight text-brand-dark">Travel <span class="text-brand-pink">top destination</span> of the world</h3>
+                            <p class="text-[11px] text-slate-500 leading-snug">We always make our customer happy by providing as many choices as possible</p>
+                            <div class="flex items-center gap-2 pt-1">
+                                <span class="bg-brand-purple text-white text-[11px] font-bold px-3 py-1.5 rounded-full shadow-md">Get Started</span>
+                                <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1">▶ Watch Demo</span>
+                            </div>
+                        </div>
+                        <!-- Images -->
+                        <div class="relative flex items-center justify-center gap-2">
+                            <div class="flex flex-col gap-2 w-1/2">
+                                <img src="images/santorini.jpg" class="rounded-xl shadow object-cover h-24 w-full">
+                                <img src="images/mountain.jpg" class="rounded-xl shadow object-cover h-20 w-full">
+                            </div>
+                            <div class="w-1/2 pt-4">
+                                <img src="images/traveler.jpg" class="rounded-xl shadow object-cover h-32 w-full">
+                            </div>
+                            <!-- Mini floating badges -->
+                            <div class="absolute -left-1 top-8 w-6 h-6 rounded-full bg-brand-pink text-white flex items-center justify-center text-[10px] shadow">✈</div>
+                            <div class="absolute -right-1 bottom-8 bg-white px-1.5 py-0.5 rounded-full shadow border text-[9px] font-bold">📍 Top Places</div>
+                            <div class="absolute left-16 bottom-0 w-5 h-5 rounded-full bg-brand-orange text-white flex items-center justify-center text-[9px] shadow">👤</div>
+                        </div>
+                    </div>
+                    <!-- Mini Partners -->
+                    <div class="mt-6 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] font-bold text-slate-600">
+                        <span>tripadvisor</span>
+                        <span>Expedia</span>
+                        <span>Booking.com</span>
+                        <span>airbnb</span>
+                        <span>ORBITZ</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- 2. CỘT TABLET (lg:col-span-4) -->
+            <div class="lg:col-span-4 flex flex-col">
+                <div class="flex items-center justify-between pb-3 mb-2 border-b border-slate-300">
+                    <span class="text-xl font-black text-slate-800">Tablet</span>
+                    <span class="text-xs font-mono text-slate-500 bg-slate-200/80 px-2 py-0.5 rounded">8 Cột • 768px - 1023px</span>
+                </div>
+                <!-- Frame Container Tablet -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-300 overflow-hidden force-tablet show-grid relative p-4 text-[13px]">
+                    <!-- Mini Header Tablet: Hamburger Left, Logo Center, Auth Right -->
+                    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+                        <div class="w-6 h-6 rounded-lg bg-brand-purple text-white flex items-center justify-center text-xs">☰</div>
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-brand-purple to-brand-pink flex items-center justify-center p-1 text-white">
+                                <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 9h16"/><path d="M2.5 15h19"/></svg>
+                            </div>
+                            <span class="font-extrabold text-sm text-brand-dark">Travlog</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[10px]">
+                            <span class="font-bold">Log In</span>
+                            <span class="bg-brand-purple text-white px-2.5 py-0.5 rounded-full font-bold">Sign Up</span>
+                        </div>
+                    </div>
+                    <!-- Mini Hero Tablet: Images on TOP, Content BELOW -->
+                    <div class="flex flex-col items-center text-center space-y-4">
+                        <!-- Images ON TOP -->
+                        <div class="relative flex items-center justify-center gap-2 w-full max-w-[240px]">
+                            <div class="flex flex-col gap-2 w-1/2">
+                                <img src="images/santorini.jpg" class="rounded-xl shadow object-cover h-24 w-full">
+                                <img src="images/mountain.jpg" class="rounded-xl shadow object-cover h-20 w-full">
+                            </div>
+                            <div class="w-1/2 pt-4">
+                                <img src="images/traveler.jpg" class="rounded-xl shadow object-cover h-32 w-full">
+                            </div>
+                            <div class="absolute -left-1 top-8 w-6 h-6 rounded-full bg-brand-pink text-white flex items-center justify-center text-[10px] shadow">✈</div>
+                            <div class="absolute -right-1 bottom-8 bg-white px-1.5 py-0.5 rounded-full shadow border text-[9px] font-bold">📍 Top Places</div>
+                            <div class="absolute left-20 bottom-0 w-5 h-5 rounded-full bg-brand-orange text-white flex items-center justify-center text-[9px] shadow">👤</div>
+                        </div>
+
+                        <!-- Content BELOW -->
+                        <div class="space-y-2 max-w-xs">
+                            <span class="inline-block px-2.5 py-1 rounded-full bg-brand-pinkLight text-brand-pink font-bold text-[10px]">Explore the world! 💼</span>
+                            <h3 class="text-lg font-black leading-tight text-brand-dark">Travel <span class="text-brand-pink">top destination</span> of the world</h3>
+                            <p class="text-[10px] text-slate-500 leading-snug">We always make our customer happy by providing as many choices as possible</p>
+                            <div class="flex items-center justify-center gap-2 pt-1">
+                                <span class="bg-brand-purple text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow">Get Started</span>
+                                <span class="text-[10px] font-bold text-slate-700 flex items-center gap-1">▶ Watch Demo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mini Partners -->
+                    <div class="mt-6 pt-3 border-t border-slate-100 flex items-center justify-around text-[9px] font-bold text-slate-600">
+                        <span>tripadvisor</span>
+                        <span>Expedia</span>
+                        <span>Booking.com</span>
+                        <span>airbnb</span>
+                        <span>ORBITZ</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- 3. CỘT MOBILE (lg:col-span-3) -->
+            <div class="lg:col-span-3 flex flex-col">
+                <div class="flex items-center justify-between pb-3 mb-2 border-b border-slate-300">
+                    <span class="text-xl font-black text-slate-800">Mobile</span>
+                    <span class="text-xs font-mono text-slate-500 bg-slate-200/80 px-2 py-0.5 rounded">4 Cột • &lt; 768px</span>
+                </div>
+                <!-- Frame Container Mobile -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-300 overflow-hidden force-mobile show-grid relative p-3 text-[12px] max-w-[320px] mx-auto w-full">
+                    <!-- Mini Header Mobile: Logo Left, Hamburger Right -->
+                    <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-brand-purple to-brand-pink flex items-center justify-center p-1 text-white">
+                                <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 9h16"/><path d="M2.5 15h19"/></svg>
+                            </div>
+                            <span class="font-extrabold text-sm text-brand-dark">Travlog</span>
+                        </div>
+                        <div class="w-6 h-6 rounded-lg bg-brand-purple text-white flex items-center justify-center text-xs">☰</div>
+                    </div>
+                    <!-- Mini Hero Mobile: Images on TOP, Content BELOW with full-width button -->
+                    <div class="flex flex-col items-center text-center space-y-3">
+                        <!-- Images ON TOP -->
+                        <div class="relative flex items-center justify-center gap-1.5 w-full max-w-[200px]">
+                            <div class="flex flex-col gap-1.5 w-1/2">
+                                <img src="images/santorini.jpg" class="rounded-lg shadow object-cover h-20 w-full">
+                                <img src="images/mountain.jpg" class="rounded-lg shadow object-cover h-16 w-full">
+                            </div>
+                            <div class="w-1/2 pt-3">
+                                <img src="images/traveler.jpg" class="rounded-lg shadow object-cover h-28 w-full">
+                            </div>
+                            <div class="absolute -left-1 top-6 w-5 h-5 rounded-full bg-brand-pink text-white flex items-center justify-center text-[8px] shadow">✈</div>
+                            <div class="absolute -right-1 bottom-6 bg-white px-1 py-0.5 rounded-full shadow border text-[8px] font-bold">📍 Top Places</div>
+                            <div class="absolute left-16 bottom-0 w-4 h-4 rounded-full bg-brand-orange text-white flex items-center justify-center text-[7px] shadow">👤</div>
+                        </div>
+
+                        <!-- Content BELOW -->
+                        <div class="space-y-2 w-full px-1">
+                            <span class="inline-block px-2 py-0.5 rounded-full bg-brand-pinkLight text-brand-pink font-bold text-[9px]">Explore the world! 💼</span>
+                            <h3 class="text-base font-black leading-tight text-brand-dark">Travel <span class="text-brand-pink">top destination</span> of the world</h3>
+                            <p class="text-[10px] text-slate-500 leading-tight">We always make our customer happy by providing as many choices as possible</p>
+                            <div class="flex flex-col gap-1.5 pt-1 w-full">
+                                <span class="w-full bg-brand-purple text-white text-[10px] font-bold py-2 rounded-full shadow text-center">Get Started</span>
+                                <span class="w-full bg-white border border-slate-200 text-[10px] font-bold text-slate-700 py-1.5 rounded-full text-center flex items-center justify-center gap-1">▶ Watch Demo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mini Partners 2 rows -->
+                    <div class="mt-4 pt-2 border-t border-slate-100 flex flex-wrap items-center justify-center gap-2 text-[8px] font-bold text-slate-600">
+                        <span>tripadvisor</span>
+                        <span>Expedia</span>
+                        <span>Booking.com</span>
+                        <span>airbnb</span>
+                        <span>ORBITZ</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- =========================================================================
+         4. FOOTER TỔNG KẾT & HƯỚNG DẪN BÀI HỌC
+         ========================================================================= -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-8 py-8 text-xs text-slate-500 border-t border-slate-200 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-4 rounded-2xl bg-white shadow-sm border border-slate-200/80 space-y-2">
+                <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                    <span class="text-brand-purple">📱</span> 1. Mobile View (&lt; 768px)
+                </h4>
+                <p>• <strong>Header:</strong> Logo bên trái, nút Menu Hamburger tím bên phải.</p>
+                <p>• <strong>Hero:</strong> Khối ảnh lên TRÊN (<code class="bg-slate-100 px-1 py-0.5 rounded text-brand-purple font-mono">order-1</code>), nội dung chữ ở DƯỚI (<code class="bg-slate-100 px-1 py-0.5 rounded text-brand-purple font-mono">order-2</code>).</p>
+                <p>• <strong>CTA:</strong> Nút "Get Started" full width, nút "Watch Demo" ở dưới.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white shadow-sm border border-slate-200/80 space-y-2">
+                <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                    <span class="text-brand-purple">📟</span> 2. Tablet View (768px - 1024px)
+                </h4>
+                <p>• <strong>Header:</strong> Hamburger góc TRÁI, Logo ở GIỮA, Login & Sign Up ở PHẢI.</p>
+                <p>• <strong>Hero:</strong> Khối 3 ảnh căn giữa phía trên, nội dung chữ căn giữa phía dưới.</p>
+                <p>• <strong>CTA:</strong> 2 nút bấm nằm ngang cạnh nhau.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white shadow-sm border border-slate-200/80 space-y-2">
+                <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                    <span class="text-brand-purple">💻</span> 3. Desktop View (&ge; 1024px)
+                </h4>
+                <p>• <strong>Header:</strong> Đầy đủ 4 menu links ở giữa, nút đăng nhập/đăng ký ở góc phải.</p>
+                <p>• <strong>Hero:</strong> 2 cột song song (Chữ bên trái, Collage ảnh bên phải).</p>
+                <p>• <strong>Đối tác:</strong> 5 thương hiệu dàn trải đều 1 hàng ngang (<code class="bg-slate-100 px-1 py-0.5 rounded text-brand-purple font-mono">justify-between</code>).</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- =========================================================================
+         JAVASCRIPT LOGIC
+         1. Bật/Tắt Menu Mobile
+         2. Chuyển đổi linh hoạt chế độ xem Desktop/Tablet/Mobile/So sánh
+         3. Bật/Tắt lưới cột Figma
+         4. Ẩn/Hiện Toolbar
+         ========================================================================= -->
+    <script>
+        // 1. Toggle Mobile Dropdown Menu
+        function toggleMobileNav(menuId) {
+            const menu = document.getElementById(menuId);
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+
+        // 2. Toggle Figma Grid
+        let isGridActive = false;
+        function toggleFigmaGrid() {
+            const frame = document.getElementById('website-frame');
+            const statusText = document.getElementById('grid-status-text');
+            const btn = document.getElementById('btn-grid-toggle');
+            
+            isGridActive = !isGridActive;
+            if (isGridActive) {
+                frame.classList.add('show-grid');
+                statusText.innerText = 'Bật';
+                btn.classList.add('bg-rose-500', 'text-white');
+                btn.classList.remove('bg-rose-500/10', 'text-rose-300');
+            } else {
+                frame.classList.remove('show-grid');
+                statusText.innerText = 'Tắt';
+                btn.classList.remove('bg-rose-500', 'text-white');
+                btn.classList.add('bg-rose-500/10', 'text-rose-300');
+            }
+        }
+
+        // 3. Switch View Modes: Auto, Desktop, Tablet, Mobile, Comparison
+        function setViewMode(mode) {
+            const frame = document.getElementById('website-frame');
+            const singleContainer = document.getElementById('single-view-container');
+            const compContainer = document.getElementById('comparison-view-container');
+            const buttons = ['auto', 'desktop', 'tablet', 'mobile', 'comparison'];
+
+            // Reset active button styling
+            buttons.forEach(b => {
+                const btn = document.getElementById('btn-mode-' + b);
+                if (btn) {
+                    btn.classList.remove('bg-brand-purple', 'text-white');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+
+            // Set current button active
+            const currentBtn = document.getElementById('btn-mode-' + mode);
+            if (currentBtn) {
+                currentBtn.classList.add('bg-brand-purple', 'text-white');
+                currentBtn.classList.remove('text-slate-400');
+            }
+
+            // Reset frame forced classes
+            frame.classList.remove('force-desktop', 'force-tablet', 'force-mobile');
+
+            if (mode === 'comparison') {
+                singleContainer.classList.add('hidden');
+                compContainer.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            // Normal / Single View Mode
+            singleContainer.classList.remove('hidden');
+            compContainer.classList.add('hidden');
+
+            if (mode === 'auto') {
+                frame.style.maxWidth = '1440px';
+                frame.style.width = '100%';
+            } else if (mode === 'desktop') {
+                frame.classList.add('force-desktop');
+                frame.style.maxWidth = '1200px';
+                frame.style.width = '1200px';
+            } else if (mode === 'tablet') {
+                frame.classList.add('force-tablet');
+                frame.style.maxWidth = '768px';
+                frame.style.width = '768px';
+            } else if (mode === 'mobile') {
+                frame.classList.add('force-mobile');
+                frame.style.maxWidth = '375px';
+                frame.style.width = '375px';
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 4. Toggle Collapse Toolbar
+        function toggleToolbarCollapse() {
+            const toolbar = document.getElementById('top-toolbar');
+            const btnShow = document.getElementById('btn-show-toolbar');
+
+            if (toolbar.classList.contains('hidden')) {
+                toolbar.classList.remove('hidden');
+                btnShow.classList.add('hidden');
+                btnShow.classList.remove('flex');
+            } else {
+                toolbar.classList.add('hidden');
+                btnShow.classList.remove('hidden');
+                btnShow.classList.add('flex');
+            }
+        }
+    </script>
+</body>
+</html>
